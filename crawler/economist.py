@@ -1,8 +1,8 @@
-import requests
+import requests, os
 from bs4 import BeautifulSoup
-from pocket_api import list_urls
+from crawler.pocket_api import list_urls
 
-
+# Parse article
 def stripped_economist_article(url):
     page = requests.get(url)
     contents = page.content
@@ -41,11 +41,24 @@ def stripped_economist_article(url):
     return article.prettify("latin-1")
 
 
-large_file = '/Users/carlos/Downloads/economist_articles.html'
-f = open(large_file, 'wb')
-for url in list_urls('economist.com'):
-    content = stripped_economist_article(url)
-    content += b"\n<hr>"
-    f.write(content)
+# Save each content in a file
+base_path = '/Users/carlos/Dropbox/2018/Newsletters/week-18/economist'
+for index, url in enumerate(list_urls('economist.com')):
+    filename = os.path.join(base_path, 'chapter-' + str(index + 1) + '.html')
+    f = open(filename, 'wb')
+    content = b'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">' \
+              b'\n<html xmlns="http://www.w3.org/1999/xhtml">' \
+              b'\n<head>'
+    content += b'\n<title>Chapter</title>' \
+               b'\n<link rel="stylesheet" href="style.css" type="text/css" />' \
+               b'\n</head>' \
+               b'\n<body>'
+    content += stripped_economist_article(url)
+    content += b'\n<div class="pagebreak"></div>'
+    content += b'\n</body>' \
+               b'\n</html>'
 
-f.close()
+    f.write(content)
+    f.close()
+    print(filename)
+
