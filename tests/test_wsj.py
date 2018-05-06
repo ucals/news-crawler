@@ -5,8 +5,9 @@ from crawler.wsj import *
 def test_scrape_url():
     url = 'https://www.wsj.com/articles/only-a-fraction-of-russian-troll-accounts-have-been-made-public-by-social-med' \
           'ia-giants-1525448056'
-    title = 'Much Remains Unknown About Russian-Troll Accounts on Social-Media Giants'
-    assert title in scrape_url(url)
+    result = scrape_url(url)
+    assert type(result) is bytes
+    assert b'article' in result
 
 
 def test_render_chapter():
