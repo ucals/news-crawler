@@ -50,4 +50,4 @@ def scrape_url(url):
             new_tag.attrs['src'] = val.find('img').attrs['src']
             val.replace_with(new_tag)
 
-    return article.prettify("latin-1") #.decode("utf-8")
+    return article.prettify("latin-1").decode("utf-8")

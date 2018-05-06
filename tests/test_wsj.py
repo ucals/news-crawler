@@ -1,21 +1,39 @@
 import pytest
 from crawler.wsj import *
+from crawler.core import *
+import crawler.pocket_api
+import json, pickle
 
 
+@pytest.mark.skip(reason="to speed up development")
 def test_scrape_url():
     url = 'https://www.wsj.com/articles/only-a-fraction-of-russian-troll-accounts-have-been-made-public-by-social-med' \
           'ia-giants-1525448056'
-    result = scrape_url(url)
-    assert type(result) is bytes
-    assert b'article' in result
+    content = scrape_url(url)
+    assert type(content) is str
+    assert 'article' in content
 
 
+@pytest.mark.skip(reason="to speed up development")
 def test_render_chapter():
-    pass
+    title = 'Chapter test'
+    content = '<article>Hello world</article>'
+    html = render_chapter(title, content)
+    assert '<title>Chapter test</title>' in html
+    assert '<article>Hello world</article>' in html
 
 
-def test_retrieve_article_list():
-    pass
+def test_retrieve_article_list(monkeypatch):
+    def mock_pocket_data():
+        with open('pocket_mock_data.json', 'r') as fp:
+            return json.load(fp)
+
+    monkeypatch.setattr(crawler.pocket_api, 'get_pocket_data', mock_pocket_data)
+
+    with open('expected_article_list.pkl', 'rb') as fp:
+        expected_list = pickle.load(fp)
+
+    assert crawler.pocket_api.list_urls('wsj.com') == expected_list
 
 
 def test_render_toc():
@@ -27,6 +45,10 @@ def test_render_ncx():
 
 
 def test_render_opf():
+    pass
+
+
+def test_assemble_ebook():
     pass
 
 
