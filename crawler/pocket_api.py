@@ -4,9 +4,10 @@ import json
 import webbrowser
 from urllib.parse import urlsplit
 import os
+from pathlib import Path
 
 
-def get_pocket_data():
+def get_pocket_data(save=True):
     consumer_key = os.environ['POCKET_CONSUMER_KEY']
     redirect_uri = 'https://www.google.com'
 
@@ -43,7 +44,14 @@ def get_pocket_data():
         'sort': 'newest',
         "detailType": "simple"
     }
-    return requests.post(url, json=payload, headers=headers).json()
+
+    data = requests.post(url, json=payload, headers=headers).json()
+    if save:
+        filename = os.path.join(str(Path.home()), 'Downloads', 'pocket_data.json')
+        with open(filename, 'w') as fp:
+            json.dump(data, fp)
+
+    return data
 
 
 def list_urls(domain):
