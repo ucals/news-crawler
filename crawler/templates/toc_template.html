@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="style.css"  type="text/css" />
+</head>
+<body>
+    <ul>{% for value in data %}
+        <li><a href="chapter{{ loop.index }}.html">{{ value['resolved_title'] }}</a></li>{% endfor %}
+    </ul>
+</body>
+</html>

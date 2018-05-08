@@ -47,8 +47,21 @@ def test_save_article_list():
     assert os.path.getmtime(filename) < time.time()
 
 
-def test_render_toc():
-    pass
+@pytest.mark.skip(reason="to speed up development")
+def test_render_toc(monkeypatch):
+    def mock_pocket_data():
+        with open('pocket_mock_data.json', 'r') as fp:
+            return json.load(fp)
+
+    monkeypatch.setattr(crawler.pocket_api, 'get_pocket_data', mock_pocket_data)
+
+    title = 'Chapter test'
+    data = crawler.pocket_api.get_domain_data('wsj.com')
+    html = render_toc(title, data)
+    with open('expected_toc.html', 'r') as fp:
+        expected_content = fp.read()
+
+    assert html in expected_content
 
 
 def test_render_ncx():

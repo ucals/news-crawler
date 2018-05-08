@@ -54,6 +54,18 @@ def get_pocket_data(save=True):
     return data
 
 
+def get_domain_data(domain):
+    result = []
+    for key, value in get_pocket_data()['list'].items():
+        url = value['given_url']
+        base_url = "{0.scheme}://{0.netloc}/".format(urlsplit(url))
+        if domain in base_url:
+            result.append(value)
+
+    return result
+
+
+# should be deprecated
 def list_urls(domain):
     result = []
     for key, value in get_pocket_data()['list'].items():
